@@ -9,6 +9,7 @@
   </parent>
 
   <artifactId>qpid-jms-ra</artifactId>
+  <version>1-SNAPSHOT</version>
   <packaging>rar</packaging>
 
   <name>Qpid JMS resource adapter</name>

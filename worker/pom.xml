@@ -24,7 +24,8 @@
     <version>1-SNAPSHOT</version>
   </parent>
   
-  <artifactId>wfswarm-messaging-worker</artifactId>
+  <artifactId>wfswarm-messaging-shared-work-queue-worker</artifactId>
+  <version>1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Worker</name>
