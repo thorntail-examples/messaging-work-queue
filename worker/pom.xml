@@ -44,7 +44,7 @@
   </repositories>
 
   <modules>
-    <module>qpid-jms-ra</module>
+    <module>resource-adapter</module>
     <module>container</module>
   </modules>
 </project>

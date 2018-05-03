@@ -8,11 +8,11 @@
     <version>1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>qpid-jms-ra</artifactId>
+  <artifactId>wfswarm-messaging-shared-work-queue-worker-resource-adapter</artifactId>
   <version>1-SNAPSHOT</version>
   <packaging>rar</packaging>
 
-  <name>Qpid JMS resource adapter</name>
+  <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Worker - Resource Adapter</name>
 
   <dependencies>
     <dependency>
@@ -23,7 +23,7 @@
     <dependency>
       <groupId>org.apache.qpid</groupId>
       <artifactId>qpid-jms-client</artifactId>
-      <version>0.32.0-SNAPSHOT</version>
+      <version>0.32.0</version>
     </dependency>
   </dependencies>
 

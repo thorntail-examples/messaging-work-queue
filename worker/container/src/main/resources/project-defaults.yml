@@ -1,10 +1,10 @@
 swarm:
   deployment:
-    org.amqphub.upstate.swarm:qpid-jms-ra.rar:
+    io.openshift.booster:wfswarm-messaging-shared-work-queue-worker-resource-adapter.rar:
   resource-adapters:
     resource-adapters:
-      qpid-jms-ra:
-        archive: qpid-jms-ra.rar
+      default:
+        archive: wfswarm-messaging-shared-work-queue-worker-resource-adapter.rar
         transaction-support: NoTransaction
         connection-definitions:
           default:
@@ -16,7 +16,7 @@ swarm:
               ConnectionFactory:
                 value: factory1
   ejb3:
-    default-resource-adapter-name: qpid-jms-ra
+    default-resource-adapter-name: default
   ee:
     annotation-property-replacement: true
   http:

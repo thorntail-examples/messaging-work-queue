@@ -1,16 +1,16 @@
-# Upstate worker - WildFly Swarm
+# Shared Work Queue Worker
 
 ## Modules
 
-The `qpid-jms-ra` module serves as the JMS resource adapter for an
+The `resource-adapter` module serves as the JMS resource adapter for an
 external AMQP message server.  It consists of two files.
 
-* [qpid-jms-ra/src/main/rar/META-INF/ra.xml](qpid-jms-ra/src/main/rar/META-INF/ra.xml) -
+* [resource-adapter/src/main/rar/META-INF/ra.xml](resource-adapter/src/main/rar/META-INF/ra.xml) -
   This is taken unaltered from the
   [generic JMS RA](https://github.com/jms-ra/generic-jms-ra) RAR
   module.
 
-* [qpid-jms-ra/pom.xml](qpid-jms-ra/pom.xml) - This adds the
+* [resource-adapter/pom.xml](resource-adapter/pom.xml) - This adds the
   dependencies necessary to use
   [Qpid JMS](http://qpid.apache.org/components/jms/index.html).
 
