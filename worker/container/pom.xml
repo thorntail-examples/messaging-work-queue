@@ -19,18 +19,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.amqphub.upstate.swarm</groupId>
-    <artifactId>worker-swarm-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <groupId>io.openshift.booster</groupId>
+    <artifactId>wfswarm-messaging-shared-work-queue-worker</artifactId>
+    <version>1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>upstate-worker-swarm-container</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <artifactId>wfswarm-messaging-shared-work-queue-worker-container</artifactId>
   <packaging>jar</packaging>
-  <name>Upstate WildFly Swarm worker container</name>
+
+  <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Worker - Container</name>
 
   <properties>
-    <version.wildfly.swarm>2018.4.1</version.wildfly.swarm>
+    <version.wildfly.swarm>${version.wildfly.swarm}</version.wildfly.swarm>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
@@ -61,21 +61,6 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>messaging</artifactId>
     </dependency>
-    <!-- These are two failed attempts to supply the deps without adding Artemis -->
-<!--
-    <dependency>
-      <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_2.0_spec</artifactId>
-      <version>1.0.2.Final</version>
-      </dependency>
--->
-<!--
-    <dependency>
-      <groupId>org.jboss.javaee</groupId>
-      <artifactId>jboss-jms-api</artifactId>
-      <version>1.1.0.GA</version>
-    </dependency>
--->
     <dependency>
       <groupId>org.amqphub.upstate.swarm</groupId>
       <artifactId>qpid-jms-ra</artifactId>
