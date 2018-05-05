@@ -150,7 +150,7 @@ objects:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - worker
+        - wfswarm-messaging-shared-work-queue-worker
         from:
           kind: ImageStreamTag
           name: wfswarm-messaging-shared-work-queue-worker:latest
