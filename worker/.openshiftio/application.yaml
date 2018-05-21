@@ -6,7 +6,7 @@ metadata:
     iconClass: icon-jboss
     tags: wildfly-swarm, java, microservice, messaging
     template.openshift.io/provider-display-name: "Red Hat, Inc."
-    description: The WildFly Swarm Shared Work Queue Mission shows scalable task processing using messaging
+    description: The WildFly Swarm Shared Work Queue Mission demonstrates scalable task processing using messaging
 parameters:
 - name: SOURCE_REPOSITORY_URL
   description: The source URL for the application
@@ -28,7 +28,7 @@ parameters:
   value: '*-swarm.jar'
   required: true
 - name: GITHUB_WEBHOOK_SECRET
-  description: A secret string used to configure the GitHub webhook.
+  description: A secret string used to configure the GitHub webhook
   displayName: GitHub Webhook Secret
   required: true
   from: '[a-zA-Z0-9]{40}'

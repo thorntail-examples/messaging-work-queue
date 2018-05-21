@@ -1,10 +1,10 @@
 swarm:
   deployment:
-    io.openshift.booster:wfswarm-messaging-shared-work-queue-worker-resource-adapter.rar:
+    io.openshift.booster:wfswarm-messaging-shared-work-queue-resource-adapter.rar:
   resource-adapters:
     resource-adapters:
       default:
-        archive: wfswarm-messaging-shared-work-queue-worker-resource-adapter.rar
+        archive: wfswarm-messaging-shared-work-queue-resource-adapter.rar
         transaction-support: NoTransaction
         connection-definitions:
           default:

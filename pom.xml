@@ -29,13 +29,14 @@
   <version>1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>WildFly Swarm - Messaging - Shared Work Queue Booster</name>
+  <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Parent</name>
 
   <properties>
     <version.wildfly.swarm>2018.5.0</version.wildfly.swarm>
   </properties>
 
   <modules>
+    <module>resource-adapter</module>
     <module>worker</module>
   </modules>
 

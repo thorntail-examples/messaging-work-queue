@@ -4,15 +4,15 @@
 
   <parent>
     <groupId>io.openshift.booster</groupId>
-    <artifactId>wfswarm-messaging-shared-work-queue-worker</artifactId>
+    <artifactId>wfswarm-messaging-shared-work-queue-parent</artifactId>
     <version>1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>wfswarm-messaging-shared-work-queue-worker-resource-adapter</artifactId>
+  <artifactId>wfswarm-messaging-shared-work-queue-resource-adapter</artifactId>
   <version>1-SNAPSHOT</version>
   <packaging>rar</packaging>
 
-  <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Worker - Resource Adapter</name>
+  <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Resource Adapter</name>
 
   <dependencies>
     <dependency>
@@ -26,6 +26,19 @@
       <version>0.32.0</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>jboss-public-repository</id>
+      <url>https://repository.jboss.org/nexus/content/repositories/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <licenses>
     <license>

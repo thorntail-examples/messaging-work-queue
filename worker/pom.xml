@@ -26,25 +26,62 @@
   
   <artifactId>wfswarm-messaging-shared-work-queue-worker</artifactId>
   <version>1-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Worker</name>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
 
-  <repositories>
-    <repository>
-      <id>jboss-public-repository</id>
-      <url>https://repository.jboss.org/nexus/content/repositories/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>bom-all</artifactId>
+        <version>${version.wildfly.swarm}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-  <modules>
-    <module>resource-adapter</module>
-    <module>container</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>resource-adapters</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>ejb</artifactId>
+    </dependency>
+    <!-- I don't think I should need this, but I do -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>messaging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.openshift.booster</groupId>
+      <artifactId>wfswarm-messaging-shared-work-queue-resource-adapter</artifactId>
+      <version>1-SNAPSHOT</version>
+      <type>rar</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-plugin</artifactId>
+        <version>${version.wildfly.swarm}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>package</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
