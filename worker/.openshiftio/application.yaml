@@ -77,7 +77,7 @@ objects:
         incremental: true
         env:
         - name: MAVEN_ARGS_APPEND
-          value: "-pl ${SOURCE_REPOSITORY_DIR}"
+          value: "--projects resource-adapter,${SOURCE_REPOSITORY_DIR}"
         - name: ARTIFACT_DIR
           value: "${SOURCE_REPOSITORY_DIR}/target"
         - name: MAVEN_MIRROR_URL
