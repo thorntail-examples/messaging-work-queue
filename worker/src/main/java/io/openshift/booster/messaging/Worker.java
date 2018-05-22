@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.amqphub.upstate.swarm;
+package io.openshift.booster.messaging;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Resource;
@@ -40,10 +40,10 @@ import javax.naming.NamingException;
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = "connectionFactory", propertyValue = "factory1"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue1"),
-        @ActivationConfigProperty(propertyName = "jndiParameters", propertyValue = "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672};queue.queue1=upstate/requests"),
+        @ActivationConfigProperty(propertyName = "jndiParameters", propertyValue = "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672};queue.queue1=requests"),
     })
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class SwarmWorker implements MessageListener {
+public class Worker implements MessageListener {
     private static String id = "worker-swarm-" +
         (Math.round(Math.random() * (10000 - 1000)) + 1000);
 
@@ -108,7 +108,7 @@ public class SwarmWorker implements MessageListener {
 
             try {
                 Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                Topic topic = session.createTopic("upstate/worker-status");
+                Topic topic = session.createTopic("worker-status");
                 MessageProducer producer = session.createProducer(topic);
 
                 Message message = session.createTextMessage();
