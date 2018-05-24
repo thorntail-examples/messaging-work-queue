@@ -19,5 +19,3 @@ swarm:
     default-resource-adapter-name: default
   ee:
     annotation-property-replacement: true
-  http:
-    port: 9090
