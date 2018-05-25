@@ -98,6 +98,10 @@ var app = {
 
         window.addEventListener("load", function (event) {
             app.fetchDataPeriodically();
-         });
+
+            $("#request-form").addEventListener("submit", function (event) {
+                app.fetchDataPeriodically();
+            });
+        });
     }
 }
