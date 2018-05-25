@@ -17,17 +17,8 @@
 
 package io.openshift.booster.messaging;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.Resource;
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
-import javax.ejb.Schedule;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -44,75 +35,60 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 
-@MessageDriven(activationConfig = {
-        @ActivationConfigProperty(propertyName = "connectionFactory", propertyValue = "factory1"),
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue1"),
-        @ActivationConfigProperty(propertyName = "jndiParameters", propertyValue = "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672};queue.queue1=responses"),
-    })
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class Frontend implements MessageListener {
-    private List<Response> responses;
-    private Map<String, WorkerStatus> workerStatus;
+@ApplicationScoped
+@ApplicationPath("/api")
+@Path("/")
+public class Frontend extends Application {
+    private final Data data;
 
     public Frontend() {
-        this.responses = new LinkedList<>();
-        this.workerStatus = new HashMap<>();
+        this.data = new Data();
+    }
+    
+    @GET
+    @Path("data")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Data getData() {
+        return data;
     }
 
-    public void onMessage(Message message) {
-        System.err.println("A message! " + message);
-    }
+    @POST
+    @Path("send-request")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void sendRequest(Request request) {
+        ConnectionFactory factory = lookupConnectionFactory();
 
-    @ApplicationPath("/api")
-    @Path("/")
-    public static class RestApi extends Application {
-        @GET
-        @Path("data")
-        @Produces("application/json")
-        public String getData() {
-            return "\"Data!\"";
-        }
+        try {
+            Connection conn = factory.createConnection();
 
-        @POST
-        @Path("send-request")
-        @Consumes("application/x-www-form-urlencoded")
-        public void sendRequest(@FormParam("text") String text) {
-            System.err.println("XXX " + text);
-            
-            ConnectionFactory factory = lookupConnectionFactory();
+            conn.start();
 
             try {
-                Connection conn = factory.createConnection();
+                Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                Queue requestQueue = session.createQueue("requests");
+                Queue responseQueue = session.createQueue("responses");
+                MessageProducer producer = session.createProducer(requestQueue);
+                MessageConsumer consumer = session.createConsumer(responseQueue);
 
-                conn.start();
+                TextMessage message = session.createTextMessage();
 
-                try {
-                    Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                    Queue requestQueue = session.createQueue("requests");
-                    Queue responseQueue = session.createQueue("responses");
-                    MessageProducer producer = session.createProducer(requestQueue);
-                    MessageConsumer consumer = session.createConsumer(responseQueue);
+                message.setText(request.getText());
+                message.setJMSReplyTo(responseQueue);
 
-                    TextMessage message = session.createTextMessage();
-
-                    message.setText(text);
-                    message.setJMSReplyTo(responseQueue);
-
-                    producer.send(message);
-                } finally {
-                    conn.close();
-                }
-            } catch (JMSException e) {
-                throw new RuntimeException(e);
+                producer.send(message);
+            } finally {
+                conn.close();
             }
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
         }
     }
 

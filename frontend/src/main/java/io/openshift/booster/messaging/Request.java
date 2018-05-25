@@ -19,26 +19,19 @@ package io.openshift.booster.messaging;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
-public class Response {
-    private final String workerId;
-    private final String text;
-
-    public Response(String workerId, String text) {
-        this.workerId = workerId;
-        this.text = text;
-    }
-
-    @JsonProperty("worker_id")
-    public String getWorkerId() {
-        return workerId;
-    }
+public class Request {
+    private String text;
 
     public String getText() {
         return text;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     @Override
     public String toString() {
-        return String.format("Response{workerId=%s, text=%s}", workerId, text);
+        return String.format("Request{text=%s}", text);
     }
 }

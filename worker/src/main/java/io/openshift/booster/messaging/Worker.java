@@ -18,9 +18,7 @@
 package io.openshift.booster.messaging;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.Resource;
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
+import javax.ejb.Singleton;
 import javax.ejb.Schedule;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -37,65 +35,11 @@ import javax.jms.Topic;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-@MessageDriven(activationConfig = {
-        @ActivationConfigProperty(propertyName = "connectionFactory", propertyValue = "factory1"),
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue1"),
-        @ActivationConfigProperty(propertyName = "jndiParameters", propertyValue = "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672};queue.queue1=requests"),
-    })
+@Singleton
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class Worker implements MessageListener {
-    private static String id = "worker-swarm-" +
-        (Math.round(Math.random() * (10000 - 1000)) + 1000);
-
-    private static AtomicInteger requestsProcessed = new AtomicInteger(0);
-
-    public void onMessage(Message message) {
-        TextMessage request = (TextMessage) message;
-
-        try {
-            System.out.println("WORKER-SWARM: Received request '" + request.getText() + "'");
-        } catch (JMSException e) {
-            throw new RuntimeException(e);
-        }
-
-        String responseBody;
-
-        try {
-            responseBody = processRequest(request);
-        } catch (Exception e) {
-            System.err.println("WORKER-SWARM: Failed processing message: " + e);
-            return;
-        }
-
-        System.out.println("WORKER-SWARM: Sending response '" + responseBody + "'");
-
-        ConnectionFactory factory = lookupConnectionFactory();
-
-        try {
-            Connection conn = factory.createConnection();
-
-            try {
-                Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                MessageProducer producer = session.createProducer(null);
-
-                TextMessage response = session.createTextMessage(responseBody);
-                response.setJMSCorrelationID(request.getJMSMessageID());
-                response.setStringProperty("worker_id", id);
-
-                producer.send(request.getJMSReplyTo(), response);
-            } finally {
-                conn.close();
-            }
-        } catch (JMSException e) {
-            throw new RuntimeException(e);
-        }
-
-        requestsProcessed.incrementAndGet();
-    }
-
-    private String processRequest(TextMessage request) throws Exception {
-        return request.getText().toUpperCase();
-    }
+public class Worker {
+    static String id = "swarm-" + (Math.round(Math.random() * (10000 - 1000)) + 1000);
+    static AtomicInteger requestsProcessed = new AtomicInteger(0);
 
     @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
     public void sendStatusUpdate() {
@@ -125,7 +69,7 @@ public class Worker implements MessageListener {
         }
     }
 
-    private ConnectionFactory lookupConnectionFactory() {
+    static ConnectionFactory lookupConnectionFactory() {
         try {
             InitialContext context = new InitialContext();
 

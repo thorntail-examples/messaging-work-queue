@@ -16,6 +16,7 @@
 
 package io.openshift.booster.messaging;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class WorkerStatus {
@@ -31,6 +32,7 @@ public class WorkerStatus {
         return timestamp;
     }
 
+    @JsonProperty("requests_processed")
     public long getRequestsProcessed() {
         return requestsProcessed;
     }
