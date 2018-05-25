@@ -21,12 +21,12 @@
 
 "use strict";
 
-var upstate = {
+var app = {
     data: null,
 
     fetchDataPeriodically: function () {
         function handler(data) {
-            upstate.data = data;
+            app.data = data;
             window.dispatchEvent(new Event("statechange"));
         }
 
@@ -38,7 +38,7 @@ var upstate = {
 
         var request = gesso.openRequest("POST", "/api/send-request", function (event) {
             if (event.target.status === 200) {
-                upstate.fetchDataPeriodically();
+                app.fetchDataPeriodically();
             }
         });
 
@@ -59,7 +59,7 @@ var upstate = {
         var lines = [];
 
         for (var response of data.responses) {
-            lines.unshift(("<b>" + response[0] + ":</b> ").padEnd(30) + response[1]);
+            lines.unshift(("<b>" + response.workerId + ":</b> ").padEnd(20) + response.text);
         }
 
         newContent.innerHTML = lines.join("\n");
@@ -76,12 +76,12 @@ var upstate = {
 
         var lines = [];
 
-        for (var worker_id in data.worker_status) {
-            var status = data.worker_status[worker_id];
-            var timestamp = status[0];
-            var requestsProcessed = status[1];
+        for (var workerId in data.workerStatus) {
+            var status = data.workerStatus[workerId];
+            var timestamp = status.timestamp;
+            var requestsProcessed = status.requestsProcessed;
 
-            lines.unshift(("<b>" + worker_id + ":</b> ").padEnd(30) + timestamp + ", " + requestsProcessed);
+            lines.unshift(("<b>" + workerId + ":</b> ").padEnd(20) + timestamp + ", " + requestsProcessed);
         }
 
         newContent.innerHTML = lines.join("\n");
@@ -92,12 +92,12 @@ var upstate = {
 
     init: function () {
         window.addEventListener("statechange", function (event) {
-            upstate.renderResponses(upstate.data);
-            upstate.renderWorkers(upstate.data);
+            app.renderResponses(app.data);
+            app.renderWorkers(app.data);
         });
 
         window.addEventListener("load", function (event) {
-            upstate.fetchDataPeriodically();
+            app.fetchDataPeriodically();
          });
     }
 }
