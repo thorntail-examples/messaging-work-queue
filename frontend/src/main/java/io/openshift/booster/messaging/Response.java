@@ -16,9 +16,6 @@
 
 package io.openshift.booster.messaging;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Objects;
-
 public class Response {
     private final String workerId;
     private final String text;
@@ -28,7 +25,6 @@ public class Response {
         this.text = text;
     }
 
-    @JsonProperty("worker_id")
     public String getWorkerId() {
         return workerId;
     }

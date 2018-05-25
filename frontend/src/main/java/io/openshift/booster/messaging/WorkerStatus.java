@@ -16,23 +16,27 @@
 
 package io.openshift.booster.messaging;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class WorkerStatus {
+    private final String id;
     private final long timestamp;
     private final long requestsProcessed;
 
-    public WorkerStatus(long timestamp, long requestsProcessed) {
+    public WorkerStatus(String id, long timestamp, long requestsProcessed) {
+        this.id = id;
         this.timestamp = timestamp;
         this.requestsProcessed = requestsProcessed;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public long getTimestamp() {
         return timestamp;
     }
 
-    @JsonProperty("requests_processed")
     public long getRequestsProcessed() {
         return requestsProcessed;
     }
@@ -49,16 +53,19 @@ public class WorkerStatus {
 
         WorkerStatus that = (WorkerStatus) o;
 
-        return timestamp == that.timestamp && requestsProcessed == that.requestsProcessed;
+        return id == that.id
+            && timestamp == that.timestamp
+            && requestsProcessed == that.requestsProcessed;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(timestamp, requestsProcessed);
+        return Objects.hash(id, timestamp, requestsProcessed);
     }
 
     @Override
     public String toString() {
-        return String.format("WorkerStatus{timestamp=%s, requestsProcessed=%s}", timestamp, requestsProcessed);
+        return String.format("WorkerStatus{id=%s, timestamp=%s, requestsProcessed=%s}",
+                             id, timestamp, requestsProcessed);
     }
 }

@@ -18,19 +18,16 @@
 package io.openshift.booster.messaging;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.inject.Inject;
 import javax.ejb.Singleton;
 import javax.ejb.Schedule;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.JMSConnectionFactory;
+import javax.jms.JMSContext;
+import javax.jms.JMSProducer;
 import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -41,45 +38,26 @@ public class Worker {
     static String id = "swarm-" + (Math.round(Math.random() * (10000 - 1000)) + 1000);
     static AtomicInteger requestsProcessed = new AtomicInteger(0);
 
+    @Inject
+    @JMSConnectionFactory("java:global/jms/default")
+    private JMSContext jmsContext;
+
     @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
     public void sendStatusUpdate() {
         System.out.println("WORKER-SWARM: Sending status update");
 
-        ConnectionFactory factory = lookupConnectionFactory();
+        Topic workerStatus = jmsContext.createTopic("worker-status");
+        JMSProducer producer = jmsContext.createProducer();
+        Message message = jmsContext.createMessage();
 
         try {
-            Connection conn = factory.createConnection();
-
-            try {
-                Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                Topic topic = session.createTopic("worker-status");
-                MessageProducer producer = session.createProducer(topic);
-
-                Message message = session.createTextMessage();
-                message.setStringProperty("worker_id", id);
-                message.setLongProperty("timestamp", System.currentTimeMillis());
-                message.setLongProperty("requests_processed", requestsProcessed.get());
-
-                producer.send(message);
-            } finally {
-                conn.close();
-            }
+            message.setStringProperty("workerId", id);
+            message.setLongProperty("timestamp", System.currentTimeMillis());
+            message.setLongProperty("requestsProcessed", requestsProcessed.get());
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }
-    }
 
-    static ConnectionFactory lookupConnectionFactory() {
-        try {
-            InitialContext context = new InitialContext();
-
-            try {
-                return (ConnectionFactory) context.lookup("java:global/jms/default");
-            } finally {
-                context.close();
-            }
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
+        producer.send(workerStatus, message);
     }
 }

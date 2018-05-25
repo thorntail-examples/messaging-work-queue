@@ -19,27 +19,18 @@ package io.openshift.booster.messaging;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
+import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
+import javax.jms.JMSContext;
+import javax.jms.JMSProducer;
 import javax.jms.Queue;
-import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.jms.Topic;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 
@@ -49,10 +40,14 @@ import javax.ws.rs.core.MediaType;
 public class Frontend extends Application {
     private final Data data;
 
+    @Inject
+    @JMSConnectionFactory("java:global/jms/default")
+    private JMSContext jmsContext;
+
     public Frontend() {
         this.data = new Data();
     }
-    
+
     @GET
     @Path("data")
     @Produces(MediaType.APPLICATION_JSON)
@@ -64,45 +59,20 @@ public class Frontend extends Application {
     @Path("send-request")
     @Consumes(MediaType.APPLICATION_JSON)
     public void sendRequest(Request request) {
-        ConnectionFactory factory = lookupConnectionFactory();
+        System.out.println("WORKER-SWARM: Sending request");
+
+        Queue requests = jmsContext.createQueue("requests");
+        Queue responses = jmsContext.createQueue("responses");
+        JMSProducer producer = jmsContext.createProducer();
+        TextMessage message = jmsContext.createTextMessage();
 
         try {
-            Connection conn = factory.createConnection();
-
-            conn.start();
-
-            try {
-                Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                Queue requestQueue = session.createQueue("requests");
-                Queue responseQueue = session.createQueue("responses");
-                MessageProducer producer = session.createProducer(requestQueue);
-                MessageConsumer consumer = session.createConsumer(responseQueue);
-
-                TextMessage message = session.createTextMessage();
-
-                message.setText(request.getText());
-                message.setJMSReplyTo(responseQueue);
-
-                producer.send(message);
-            } finally {
-                conn.close();
-            }
+            message.setText(request.getText());
+            message.setJMSReplyTo(responses);
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }
-    }
 
-    private static ConnectionFactory lookupConnectionFactory() {
-        try {
-            InitialContext context = new InitialContext();
-
-            try {
-                return (ConnectionFactory) context.lookup("java:global/jms/default");
-            } finally {
-                context.close();
-            }
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
+        producer.send(requests, message);
     }
 }

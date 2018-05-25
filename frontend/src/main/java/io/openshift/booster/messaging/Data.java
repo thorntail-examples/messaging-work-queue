@@ -17,7 +17,6 @@
 
 package io.openshift.booster.messaging;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,12 +31,10 @@ public class Data {
         this.workerStatus = new ConcurrentHashMap<>();
     }
 
-    @JsonProperty("responses")
     public Queue<Response> getResponses() {
         return responses;
     }
 
-    @JsonProperty("worker_status")
     public Map<String, WorkerStatus> getWorkerStatus() {
         return workerStatus;
     }

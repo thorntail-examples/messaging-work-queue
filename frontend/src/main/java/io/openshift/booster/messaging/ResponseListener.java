@@ -37,25 +37,26 @@ public class ResponseListener implements MessageListener {
     @Inject
     private Frontend frontend;
 
+    @Override
     public void onMessage(Message message) {
-        TextMessage response = (TextMessage) message;
+        TextMessage textMessage = (TextMessage) message;
+        Response response;
+        
+        try {
+            String workerId = textMessage.getStringProperty("workerId");
+            String text = textMessage.getText();
 
-        try {
-            System.out.println("FRONTEND-SWARM: Received response '" + response.getText() + "'");
-        } catch (JMSException e) {
-            throw new RuntimeException(e);
-        }
-        
-        String workerId;
-        String text;
-        
-        try {
-            workerId = response.getStringProperty("worker_id");
-            text = response.getText();
+            response = new Response(workerId, text);
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }
 
-        frontend.getData().getResponses().add(new Response(workerId, text));
+        frontend.getData().getResponses().add(response);
+
+        // try {
+        //     System.out.println("FRONTEND-SWARM: Received response '" + response.getText() + "'");
+        // } catch (JMSException e) {
+        //     throw new RuntimeException(e);
+        // }
     }
 }

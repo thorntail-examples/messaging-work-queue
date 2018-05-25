@@ -23,16 +23,16 @@ import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.JMSConnectionFactory;
+import javax.jms.JMSContext;
 import javax.jms.JMSException;
+import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.jms.Topic;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -45,16 +45,16 @@ import javax.naming.NamingException;
 public class RequestListener implements MessageListener {
     @Inject
     private Worker worker;
-    
+
+    @Inject
+    @JMSConnectionFactory("java:global/jms/default")
+    private JMSContext jmsContext;
+
+    @Override
     public void onMessage(Message message) {
+        System.out.println("WORKER-SWARM: Received request '" + message + "'");
+
         TextMessage request = (TextMessage) message;
-
-        try {
-            System.out.println("WORKER-SWARM: Received request '" + request.getText() + "'");
-        } catch (JMSException e) {
-            throw new RuntimeException(e);
-        }
-
         String responseText;
 
         try {
@@ -66,26 +66,21 @@ public class RequestListener implements MessageListener {
 
         System.out.println("WORKER-SWARM: Sending response '" + responseText + "'");
 
-        ConnectionFactory factory = worker.lookupConnectionFactory();
+        JMSProducer producer = jmsContext.createProducer();
+        TextMessage response = jmsContext.createTextMessage();
+        Destination responses;
 
         try {
-            Connection conn = factory.createConnection();
+            response.setJMSCorrelationID(request.getJMSMessageID());
+            response.setStringProperty("workerId", worker.id);
+            response.setText(responseText);
 
-            try {
-                Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                MessageProducer producer = session.createProducer(null);
-
-                TextMessage response = session.createTextMessage(responseText);
-                response.setJMSCorrelationID(request.getJMSMessageID());
-                response.setStringProperty("worker_id", worker.id);
-
-                producer.send(request.getJMSReplyTo(), response);
-            } finally {
-                conn.close();
-            }
+            responses = request.getJMSReplyTo();
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }
+
+        producer.send(responses, response);
 
         worker.requestsProcessed.incrementAndGet();
     }

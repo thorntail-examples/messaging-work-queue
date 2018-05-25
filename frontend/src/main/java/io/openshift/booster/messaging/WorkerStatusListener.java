@@ -37,18 +37,22 @@ public class WorkerStatusListener implements MessageListener {
     @Inject
     private Frontend frontend;
 
+    @Override
     public void onMessage(Message message) {
-        try {
-            String id = message.getStringProperty("worker_id");
-            long timestamp = message.getLongProperty("timestamp");
-            long requestsProcessed = message.getLongProperty("requests_processed");
+        WorkerStatus status;
 
-            frontend.getData().getWorkerStatus().put(id, new WorkerStatus(timestamp, requestsProcessed));
-            
-            System.err.println("A ws message! " + id + ", " + timestamp + ", " + requestsProcessed);
+        try {
+            String id = message.getStringProperty("workerId");
+            long timestamp = message.getLongProperty("timestamp");
+            long requestsProcessed = message.getLongProperty("requestsProcessed");
+
+            status = new WorkerStatus(id, timestamp, requestsProcessed);
         } catch (JMSException e) {
-            throw new IllegalStateException(e);
+            throw new RuntimeException(e);
         }
-            
+
+        frontend.getData().getWorkerStatus().put(status.getId(), status);
+
+        System.err.println("A ws message! " + status.getId() + ", " + status.getTimestamp() + ", " + status.getRequestsProcessed());
     }
 }
