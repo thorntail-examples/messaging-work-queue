@@ -32,15 +32,18 @@
   <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Parent</name>
 
   <properties>
-    <version.wildfly.swarm>2018.5.0</version.wildfly.swarm>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <version.javax.json>1.0.4</version.javax.json>
+    <version.junit>4.12</version.junit>
+    <version.wildfly.swarm>2018.5.0</version.wildfly.swarm>
   </properties>
 
   <modules>
     <module>resource-adapter</module>
     <module>frontend</module>
     <module>worker</module>
+    <module>tests</module>
   </modules>
 
   <dependencyManagement>
