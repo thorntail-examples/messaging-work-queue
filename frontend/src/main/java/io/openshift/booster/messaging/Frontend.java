@@ -33,11 +33,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 @ApplicationPath("/api")
 @Path("/")
 public class Frontend extends Application {
+    private static final Logger log = Logger.getLogger(Frontend.class);
     private final Data data;
 
     @Inject
@@ -59,7 +61,7 @@ public class Frontend extends Application {
     @Path("send-request")
     @Consumes(MediaType.APPLICATION_JSON)
     public void sendRequest(Request request) {
-        System.out.println("WORKER-SWARM: Sending request");
+        log.infof("Sending %s", request);
 
         Queue requests = jmsContext.createQueue("requests");
         Queue responses = jmsContext.createQueue("responses");

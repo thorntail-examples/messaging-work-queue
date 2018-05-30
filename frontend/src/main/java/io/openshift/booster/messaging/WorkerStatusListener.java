@@ -26,6 +26,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import org.jboss.logging.Logger;
 
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = "connectionFactory", propertyValue = "factory1"),
@@ -34,6 +35,8 @@ import javax.jms.TextMessage;
     })
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class WorkerStatusListener implements MessageListener {
+    private static final Logger log = Logger.getLogger(WorkerStatusListener.class);
+
     @Inject
     private Frontend frontend;
 
@@ -53,6 +56,6 @@ public class WorkerStatusListener implements MessageListener {
 
         frontend.getData().getWorkerStatus().put(status.getId(), status);
 
-        System.err.println("A ws message! " + status.getId() + ", " + status.getTimestamp() + ", " + status.getRequestsProcessed());
+        log.infof("Received %s", status);
     }
 }

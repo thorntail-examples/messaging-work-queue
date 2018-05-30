@@ -31,10 +31,12 @@ import javax.jms.Message;
 import javax.jms.Topic;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.jboss.logging.Logger;
 
 @Singleton
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class Worker {
+    private static final Logger log = Logger.getLogger(Worker.class);
     static String id = "swarm-" + (Math.round(Math.random() * (10000 - 1000)) + 1000);
     static AtomicInteger requestsProcessed = new AtomicInteger(0);
 
@@ -44,7 +46,7 @@ public class Worker {
 
     @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
     public void sendStatusUpdate() {
-        System.out.println("WORKER-SWARM: Sending status update");
+        log.infof("Sending status update");
 
         Topic workerStatus = jmsContext.createTopic("worker-status");
         JMSProducer producer = jmsContext.createProducer();

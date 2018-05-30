@@ -35,6 +35,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.jboss.logging.Logger;
 
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = "connectionFactory", propertyValue = "factory1"),
@@ -43,6 +44,8 @@ import javax.naming.NamingException;
     })
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class RequestListener implements MessageListener {
+    private static final Logger log = Logger.getLogger(RequestListener.class);
+
     @Inject
     private Worker worker;
 
@@ -52,7 +55,7 @@ public class RequestListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        System.out.println("WORKER-SWARM: Received request '" + message + "'");
+        log.infof("Receiving request %s", message);
 
         TextMessage request = (TextMessage) message;
         String responseText;
@@ -60,11 +63,9 @@ public class RequestListener implements MessageListener {
         try {
             responseText = processRequest(request);
         } catch (Exception e) {
-            System.err.println("WORKER-SWARM: Failed processing message: " + e);
+            log.errorf("Failed processing message: " + e);
             return;
         }
-
-        System.out.println("WORKER-SWARM: Sending response '" + responseText + "'");
 
         JMSProducer producer = jmsContext.createProducer();
         TextMessage response = jmsContext.createTextMessage();
@@ -83,6 +84,8 @@ public class RequestListener implements MessageListener {
         producer.send(responses, response);
 
         worker.requestsProcessed.incrementAndGet();
+
+        log.infof("Sent %s", response);
     }
 
     private String processRequest(TextMessage request) throws Exception {

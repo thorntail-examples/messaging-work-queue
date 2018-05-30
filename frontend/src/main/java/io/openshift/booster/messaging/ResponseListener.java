@@ -26,6 +26,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import org.jboss.logging.Logger;
 
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = "connectionFactory", propertyValue = "factory1"),
@@ -34,6 +35,8 @@ import javax.jms.TextMessage;
     })
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ResponseListener implements MessageListener {
+    private static final Logger log = Logger.getLogger(ResponseListener.class);
+
     @Inject
     private Frontend frontend;
 
@@ -41,7 +44,7 @@ public class ResponseListener implements MessageListener {
     public void onMessage(Message message) {
         TextMessage textMessage = (TextMessage) message;
         Response response;
-        
+
         try {
             String workerId = textMessage.getStringProperty("workerId");
             String text = textMessage.getText();
@@ -53,10 +56,6 @@ public class ResponseListener implements MessageListener {
 
         frontend.getData().getResponses().add(response);
 
-        // try {
-        //     System.out.println("FRONTEND-SWARM: Received response '" + response.getText() + "'");
-        // } catch (JMSException e) {
-        //     throw new RuntimeException(e);
-        // }
+        log.infof("Received %s", response);
     }
 }
