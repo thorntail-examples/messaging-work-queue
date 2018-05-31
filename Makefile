@@ -7,6 +7,10 @@ clean:
 	mvn clean
 	rm -f README.html audit.log
 
+.PHONY: test
+test:
+	mvn install -Popenshift-it
+
 .PHONY: run-frontend
 run-frontend:
 	java -jar frontend/target/wfswarm-messaging-shared-work-queue-frontend-1-SNAPSHOT-swarm.jar

@@ -47,11 +47,13 @@
       <artifactId>wfswarm-messaging-shared-work-queue-frontend</artifactId>
       <type>war</type>
       <version>1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.openshift.booster</groupId>
       <artifactId>wfswarm-messaging-shared-work-queue-worker</artifactId>
       <version>1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -68,6 +70,11 @@
           <artifactId>undertow-core</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.arquillian.cube</groupId>
+      <artifactId>arquillian-cube-requirement</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
