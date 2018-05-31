@@ -44,12 +44,6 @@
     </dependency>
     <dependency>
       <groupId>io.openshift.booster</groupId>
-      <artifactId>wfswarm-messaging-shared-work-queue-resource-adapter</artifactId>
-      <type>rar</type>
-      <version>1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>io.openshift.booster</groupId>
       <artifactId>wfswarm-messaging-shared-work-queue-frontend</artifactId>
       <type>war</type>
       <version>1-SNAPSHOT</version>
@@ -97,7 +91,7 @@
             </configuration>
           </plugin>
 
-          <!-- needed to be able to run the tests in an ephemeral namespace -->
+          <!-- Needed to be able to run the tests in an ephemeral namespace -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-resources-plugin</artifactId>

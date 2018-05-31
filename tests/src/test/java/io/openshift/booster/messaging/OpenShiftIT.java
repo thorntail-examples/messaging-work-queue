@@ -16,23 +16,16 @@
  *
  */
 
-package io.openshift.booster;
+package io.openshift.booster.messaging;
 
 import java.util.concurrent.TimeUnit;
-
 import javax.json.Json;
-
 import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.junit.Arquillian;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.core.IsEqual.equalTo;
-
 @RunWith(Arquillian.class)
-public class OpenshiftIT {
+public class OpenShiftIT {
 }
