@@ -18,6 +18,7 @@ message protocol to send and receive messages.
 Run the following commands to configure and deploy the applications.
 
 ```bash
+find . | grep templates | grep amq63 | xargs -n 1 oc apply -f
 find . | grep openshiftio | grep application | xargs -n 1 oc apply -f
 
 oc new-app --template=amq63-basic -p APPLICATION_NAME=shared-work-queue -p IMAGE_STREAM_NAMESPACE=$(oc project -q) -p MQ_PROTOCOL=amqp -p MQ_QUEUES=requests,responses,worker-status -p MQ_USERNAME=shared-work-queue -p MQ_PASSWORD=shared-work-queue
