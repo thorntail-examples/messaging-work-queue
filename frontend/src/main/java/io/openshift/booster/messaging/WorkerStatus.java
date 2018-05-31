@@ -16,8 +16,6 @@
 
 package io.openshift.booster.messaging;
 
-import java.util.Objects;
-
 public class WorkerStatus {
     private final String id;
     private final long timestamp;
@@ -39,28 +37,6 @@ public class WorkerStatus {
 
     public long getRequestsProcessed() {
         return requestsProcessed;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        WorkerStatus that = (WorkerStatus) o;
-
-        return id == that.id
-            && timestamp == that.timestamp
-            && requestsProcessed == that.requestsProcessed;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, timestamp, requestsProcessed);
     }
 
     @Override
