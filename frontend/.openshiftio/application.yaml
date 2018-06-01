@@ -120,7 +120,7 @@ objects:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: GC_MAX_METASPACE_VALUE
-            value: !!integer 200
+            value: "200"
           envFrom:
             - configMapRef:
                 name: shared-work-queue
