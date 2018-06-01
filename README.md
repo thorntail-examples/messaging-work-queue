@@ -21,7 +21,7 @@ Run the following commands to configure and deploy the applications.
 find . | grep templates | grep amq63 | xargs -n 1 oc apply -f
 find . | grep openshiftio | grep application | xargs -n 1 oc apply -f
 
-oc new-app --template=amq63-basic -p APPLICATION_NAME=shared-work-queue -p IMAGE_STREAM_NAMESPACE=$(oc project -q) -p MQ_PROTOCOL=amqp -p MQ_QUEUES=requests,responses,worker-status -p MQ_USERNAME=shared-work-queue -p MQ_PASSWORD=shared-work-queue
+oc new-app --template=amq63-basic -p APPLICATION_NAME=shared-work-queue-broker -p IMAGE_STREAM_NAMESPACE=$(oc project -q) -p MQ_PROTOCOL=amqp -p MQ_QUEUES=requests,responses -p MQ_TOPICS=worker-status -p MQ_USERNAME=shared-work-queue -p MQ_PASSWORD=shared-work-queue
 
 oc new-app --template=wfswarm-messaging-shared-work-queue-frontend -p SOURCE_REPOSITORY_URL=https://github.com/ssorj/wfswarm-messaging-shared-work-queue -p SOURCE_REPOSITORY_REF=master -p SOURCE_REPOSITORY_DIR=frontend
 
