@@ -22,7 +22,14 @@ oc apply -f templates
 oc apply -f frontend/.openshiftio/application.yaml
 oc apply -f worker/.openshiftio/application.yaml
 
-oc new-app --template=amq63-basic -p APPLICATION_NAME=shared-work-queue-broker -p IMAGE_STREAM_NAMESPACE=$(oc project -q) -p MQ_PROTOCOL=amqp -p MQ_QUEUES=requests,responses -p MQ_TOPICS=worker-status -p MQ_USERNAME=shared-work-queue -p MQ_PASSWORD=shared-work-queue
+oc new-app --template=amq63-basic \
+  -p APPLICATION_NAME=shared-work-queue-broker \
+  -p IMAGE_STREAM_NAMESPACE=$(oc project -q) \
+  -p MQ_PROTOCOL=amqp \
+  -p MQ_QUEUES=requests,responses \
+  -p MQ_TOPICS=worker-status \
+  -p MQ_USERNAME=shared-work-queue \
+  -p MQ_PASSWORD=shared-work-queue
 
 oc new-app --template=wfswarm-messaging-shared-work-queue-frontend
 oc new-app --template=wfswarm-messaging-shared-work-queue-worker
