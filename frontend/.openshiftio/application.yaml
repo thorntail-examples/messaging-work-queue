@@ -11,6 +11,7 @@ parameters:
 - name: SOURCE_REPOSITORY_URL
   description: The source URL for the application
   displayName: Source URL
+  value: https://github.com/ssorj/wfswarm-messaging-shared-work-queue
   required: true
 - name: SOURCE_REPOSITORY_REF
   description: The branch name for the application
@@ -20,7 +21,7 @@ parameters:
 - name: SOURCE_REPOSITORY_DIR
   description: The location within the source repo of the application
   displayName: Source Directory
-  value: .
+  value: frontend
   required: true
 - name: ARTIFACT_COPY_ARGS
   description: Syntax to be used to copy uberjar files to the target directory
@@ -119,7 +120,7 @@ objects:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: GC_MAX_METASPACE_VALUE
-            value: 200
+            value: !!integer 200
           envFrom:
             - configMapRef:
                 name: shared-work-queue
@@ -172,3 +173,15 @@ objects:
       port: 8080
     selector:
       app: wfswarm-messaging-shared-work-queue-frontend
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: wfswarm-messaging-shared-work-queue-frontend
+    name: frontend
+  spec:
+    port:
+      targetPort: 8080
+    to:
+      kind: Service
+      name: wfswarm-messaging-shared-work-queue-frontend
