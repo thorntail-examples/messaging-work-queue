@@ -12,7 +12,7 @@ swarm:
             class-name: org.jboss.resource.adapter.jms.JmsManagedConnectionFactory
             config-properties:
               JndiParameters:
-                value: java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672}
+                value: "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672}?jms.user=shared-work-queue&jms.password=shared-work-queue"
               ConnectionFactory:
                 value: factory1
   ejb3:
