@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: messaging-service
 data:
-  MESSAGING_SERVICE_HOST: shared-work-queue-broker-amqp
+  MESSAGING_SERVICE_HOST: shared-work-queue-broker-amq-amqp
   MESSAGING_SERVICE_PORT: "5672"

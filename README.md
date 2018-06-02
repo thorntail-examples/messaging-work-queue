@@ -33,6 +33,15 @@ oc new-app --template=wfswarm-messaging-shared-work-queue-frontend
 oc new-app --template=wfswarm-messaging-shared-work-queue-worker
 ```
 
+<!-- oc new-app --template=amq-broker-71-basic \ -->
+<!--   -p APPLICATION_NAME=shared-work-queue-broker \ -->
+<!--   -p IMAGE_STREAM_NAMESPACE=$(oc project -q) \ -->
+<!--   -p AMQ_PROTOCOL=amqp \ -->
+<!--   -p AMQ_QUEUES=requests,responses \ -->
+<!--   -p AMQ_ADDRESSES=worker-status \ -->
+<!--   -p AMQ_USER=shared-work-queue \ -->
+<!--   -p AMQ_PASSWORD=shared-work-queue -->
+
 ## Modules
 
 The `resource-adapter` module serves as the JMS resource adapter for an
