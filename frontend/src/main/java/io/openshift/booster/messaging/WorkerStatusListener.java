@@ -56,7 +56,7 @@ public class WorkerStatusListener implements MessageListener {
             throw new RuntimeException(e);
         }
 
-        frontend.getData().getWorkerStatus().put(status.getId(), status);
+        frontend.getData().getWorkers().put(status.getId(), status);
 
         log.infof("Received %s", status);
     }

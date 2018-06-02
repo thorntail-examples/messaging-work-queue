@@ -18,14 +18,14 @@
 package io.openshift.booster.messaging;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.inject.Inject;
-import javax.ejb.Singleton;
 import javax.ejb.Schedule;
+import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.JMSException;
+import javax.inject.Inject;
 import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
+import javax.jms.JMSException;
 import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.Topic;

@@ -76,8 +76,8 @@ var app = {
 
         var lines = [];
 
-        for (var workerId in data.workerStatus) {
-            var status = data.workerStatus[workerId];
+        for (var workerId in data.workers) {
+            var status = data.workers[workerId];
             var timestamp = status.timestamp;
             var requestsProcessed = status.requestsProcessed;
 

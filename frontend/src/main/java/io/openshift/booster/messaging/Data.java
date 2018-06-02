@@ -24,23 +24,23 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Data {
     private final Queue<Response> responses;
-    private final Map<String, WorkerStatus> workerStatus;
+    private final Map<String, WorkerStatus> workers;
 
     public Data() {
         this.responses = new ConcurrentLinkedQueue<>();
-        this.workerStatus = new ConcurrentHashMap<>();
+        this.workers = new ConcurrentHashMap<>();
     }
 
     public Queue<Response> getResponses() {
         return responses;
     }
 
-    public Map<String, WorkerStatus> getWorkerStatus() {
-        return workerStatus;
+    public Map<String, WorkerStatus> getWorkers() {
+        return workers;
     }
 
     @Override
     public String toString() {
-        return String.format("Data{responses='%s', workerStatus='%s'}", responses, workerStatus);
+        return String.format("Data{responses='%s', workers='%s'}", responses, workers);
     }
 }

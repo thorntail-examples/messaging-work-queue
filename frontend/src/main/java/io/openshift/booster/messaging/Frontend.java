@@ -17,7 +17,9 @@
 
 package io.openshift.booster.messaging;
 
-import javax.enterprise.context.ApplicationScoped;
+import java.util.Map;
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSException;
@@ -35,7 +37,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import org.jboss.logging.Logger;
 
-@ApplicationScoped
+@Singleton
 @ApplicationPath("/api")
 @Path("/")
 public class Frontend extends Application {
@@ -76,5 +78,23 @@ public class Frontend extends Application {
         }
 
         producer.send(requests, message);
+    }
+
+    @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
+    public void pruneStaleWorkers() {
+        log.infof("Pruning stale workers");
+
+        Map<String, WorkerStatus> workers = getData().getWorkers();
+        long now = System.currentTimeMillis();
+
+        for (Map.Entry<String, WorkerStatus> entry : workers.entrySet()) {
+            String workerId = entry.getKey();
+            WorkerStatus status = entry.getValue();
+
+            if (now - status.getTimestamp() > 10 * 1000) {
+                workers.remove(workerId);
+                log.infof("Pruned %s", status);
+            }
+        }
     }
 }
