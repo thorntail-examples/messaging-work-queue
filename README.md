@@ -19,8 +19,6 @@ Run the following commands to configure and deploy the applications.
 
 ```bash
 oc apply -f templates
-oc apply -f frontend/.openshiftio/application.yaml
-oc apply -f worker/.openshiftio/application.yaml
 
 oc new-app --template=amq63-basic \
   -p APPLICATION_NAME=shared-work-queue-broker \
