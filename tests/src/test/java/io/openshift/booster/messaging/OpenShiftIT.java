@@ -17,20 +17,43 @@
 
 package io.openshift.booster.messaging;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.UUID;
 import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static com.jayway.restassured.RestAssured.given;
+
 @RunWith(Arquillian.class)
 public class OpenShiftIT {
-    @RouteURL("wfswarm-messaging-shared-work-queue-frontend")
+    @RouteURL("frontend")
     @AwaitRoute(path = "/health")
     private URL frontendUrl;
 
+    private URL dataUrl;
+    private URL requestUrl;
+
+    @Before
+    public void before() throws MalformedURLException {
+        dataUrl = new URL(frontendUrl, "api/data");
+        requestUrl = new URL(frontendUrl, "api/send-request");
+    }
+
     @Test
-    public void testSomething() {
+    public void testRequestProcessing() {
+        String text = UUID.randomUUID().toString();
+        String json = String.format("{'text': '%s'}", text);
+
+        given().body(text)
+            .contentType("application/json")
+            .post(requestUrl)
+            .then()
+            .assertThat()
+            .statusCode(200);
     }
 }
