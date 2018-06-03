@@ -1,4 +1,4 @@
-# Messaging Shared Work Queue Mission for WildFly Swarm
+# Messaging Work Queue Mission for WildFly Swarm
 
 ## Purpose
 
@@ -21,26 +21,26 @@ Run the following commands to configure and deploy the applications.
 oc apply -f templates
 
 oc new-app --template=amq63-basic \
-  -p APPLICATION_NAME=shared-work-queue-broker \
+  -p APPLICATION_NAME=work-queue-broker \
   -p IMAGE_STREAM_NAMESPACE=$(oc project -q) \
   -p MQ_PROTOCOL=amqp \
   -p MQ_QUEUES=requests,responses \
   -p MQ_TOPICS=worker-status \
-  -p MQ_USERNAME=shared-work-queue \
-  -p MQ_PASSWORD=shared-work-queue
+  -p MQ_USERNAME=work-queue \
+  -p MQ_PASSWORD=work-queue
 
-oc new-app --template=wfswarm-messaging-shared-work-queue-frontend
-oc new-app --template=wfswarm-messaging-shared-work-queue-worker
+oc new-app --template=wfswarm-messaging-work-queue-frontend
+oc new-app --template=wfswarm-messaging-work-queue-worker
 ```
 
 <!-- oc new-app --template=amq-broker-71-basic \ -->
-<!--   -p APPLICATION_NAME=shared-work-queue-broker \ -->
+<!--   -p APPLICATION_NAME=work-queue-broker \ -->
 <!--   -p IMAGE_STREAM_NAMESPACE=$(oc project -q) \ -->
 <!--   -p AMQ_PROTOCOL=amqp \ -->
 <!--   -p AMQ_QUEUES=requests,responses \ -->
 <!--   -p AMQ_ADDRESSES=worker-status \ -->
-<!--   -p AMQ_USER=shared-work-queue \ -->
-<!--   -p AMQ_PASSWORD=shared-work-queue -->
+<!--   -p AMQ_USER=work-queue \ -->
+<!--   -p AMQ_PASSWORD=work-queue -->
 
 ## Modules
 

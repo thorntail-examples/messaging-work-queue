@@ -20,26 +20,26 @@
 
   <parent>
     <groupId>io.openshift.booster</groupId>
-    <artifactId>wfswarm-messaging-shared-work-queue-parent</artifactId>
+    <artifactId>wfswarm-messaging-work-queue-parent</artifactId>
     <version>1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>wfswarm-messaging-shared-work-queue-tests</artifactId>
+  <artifactId>wfswarm-messaging-work-queue-tests</artifactId>
   <packaging>jar</packaging>
 
-  <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Tests</name>
+  <name>WildFly Swarm - Messaging - Work Queue Booster - Tests</name>
 
   <dependencies>
     <dependency>
       <groupId>io.openshift.booster</groupId>
-      <artifactId>wfswarm-messaging-shared-work-queue-frontend</artifactId>
+      <artifactId>wfswarm-messaging-work-queue-frontend</artifactId>
       <type>war</type>
       <version>1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.openshift.booster</groupId>
-      <artifactId>wfswarm-messaging-shared-work-queue-worker</artifactId>
+      <artifactId>wfswarm-messaging-work-queue-worker</artifactId>
       <version>1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>

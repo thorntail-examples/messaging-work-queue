@@ -25,11 +25,11 @@
   </parent>
 
   <groupId>io.openshift.booster</groupId>
-  <artifactId>wfswarm-messaging-shared-work-queue-parent</artifactId>
+  <artifactId>wfswarm-messaging-work-queue-parent</artifactId>
   <version>1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Parent</name>
+  <name>WildFly Swarm - Messaging - Work Queue Booster - Parent</name>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>

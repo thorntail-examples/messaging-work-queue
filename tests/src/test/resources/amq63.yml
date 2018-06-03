@@ -6,20 +6,20 @@ spec:
   - port: 5672
     targetPort: 5672
   selector:
-    deploymentConfig: "shared-work-queue-broker"
+    deploymentConfig: "work-queue-broker"
 metadata:
-  name: "shared-work-queue-broker-amq-amqp"
+  name: "work-queue-broker-amq-amqp"
   labels:
-    application: "shared-work-queue"
+    application: "work-queue"
   annotations:
     description: The broker's AMQP port.
 ---
 kind: DeploymentConfig
 apiVersion: v1
 metadata:
-  name: "shared-work-queue-broker"
+  name: "work-queue-broker"
   labels:
-    application: "shared-work-queue"
+    application: "work-queue"
 spec:
   strategy:
     type: Rolling
@@ -30,24 +30,24 @@ spec:
     imageChangeParams:
       automatic: true
       containerNames:
-      - "shared-work-queue-broker"
+      - "work-queue-broker"
       from:
         kind: ImageStreamTag
         name: jboss-amq-63:1.3
   - type: ConfigChange
   replicas: 1
   selector:
-    deploymentConfig: "shared-work-queue-broker"
+    deploymentConfig: "work-queue-broker"
   template:
     metadata:
-      name: "shared-work-queue-broker"
+      name: "work-queue-broker"
       labels:
-        deploymentConfig: "shared-work-queue-broker"
-        application: "shared-work-queue"
+        deploymentConfig: "work-queue-broker"
+        application: "work-queue"
     spec:
       terminationGracePeriodSeconds: 60
       containers:
-      - name: "shared-work-queue-broker"
+      - name: "work-queue-broker"
         image: jboss-amq-63
         imagePullPolicy: Always
         readinessProbe:
@@ -74,9 +74,9 @@ spec:
           protocol: TCP
         env:
         - name: AMQ_USER
-          value: "shared-work-queue"
+          value: "work-queue"
         - name: AMQ_PASSWORD
-          value: "shared-work-queue"
+          value: "work-queue"
         - name: AMQ_TRANSPORTS
           value: "amqp"
         - name: AMQ_QUEUES
@@ -88,7 +88,7 @@ spec:
         - name: AMQ_MESH_DISCOVERY_TYPE
           value: "dns"
         - name: AMQ_MESH_SERVICE_NAME
-          value: "shared-work-queue-broker-mesh"
+          value: "work-queue-broker-mesh"
         - name: AMQ_MESH_SERVICE_NAMESPACE
           valueFrom:
             fieldRef:

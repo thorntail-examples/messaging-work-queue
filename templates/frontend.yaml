@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: wfswarm-messaging-shared-work-queue-frontend
+  name: wfswarm-messaging-work-queue-frontend
   annotations:
     iconClass: icon-jboss
     tags: wildfly-swarm, java, microservice, messaging
     template.openshift.io/provider-display-name: "Red Hat, Inc."
-    description: The WildFly Swarm Shared Work Queue Mission demonstrates scalable task processing using messaging
+    description: The WildFly Swarm Work Queue Mission demonstrates scalable task processing using messaging
 parameters:
 - name: SOURCE_REPOSITORY_URL
   description: The source URL for the application
   displayName: Source URL
-  value: https://github.com/ssorj/wfswarm-messaging-shared-work-queue
+  value: https://github.com/ssorj/wfswarm-messaging-work-queue
   required: true
 - name: SOURCE_REPOSITORY_REF
   description: The branch name for the application
@@ -42,12 +42,12 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: wfswarm-messaging-shared-work-queue-frontend
+    name: wfswarm-messaging-work-queue-frontend
   spec: {}
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: runtime-wfswarm-messaging-shared-work-queue-frontend
+    name: runtime-wfswarm-messaging-work-queue-frontend
   spec:
     tags:
     - name: latest
@@ -57,12 +57,12 @@ objects:
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: wfswarm-messaging-shared-work-queue-frontend
+    name: wfswarm-messaging-work-queue-frontend
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: wfswarm-messaging-shared-work-queue-frontend:latest
+        name: wfswarm-messaging-work-queue-frontend:latest
     postCommit: {}
     resources: {}
     source:
@@ -74,7 +74,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: runtime-wfswarm-messaging-shared-work-queue-frontend:latest
+          name: runtime-wfswarm-messaging-work-queue-frontend:latest
         incremental: true
         env:
         - name: MAVEN_ARGS_APPEND
@@ -99,8 +99,8 @@ objects:
   kind: DeploymentConfig
   metadata:
     labels:
-      app: wfswarm-messaging-shared-work-queue-frontend
-    name: wfswarm-messaging-shared-work-queue-frontend
+      app: wfswarm-messaging-work-queue-frontend
+    name: wfswarm-messaging-work-queue-frontend
   spec:
     replicas: 1
     revisionHistoryLimit: 2
@@ -111,7 +111,7 @@ objects:
     template:
       metadata:
         labels:
-          app: wfswarm-messaging-shared-work-queue-frontend
+          app: wfswarm-messaging-work-queue-frontend
       spec:
         containers:
         - env:
@@ -124,7 +124,7 @@ objects:
           envFrom:
             - configMapRef:
                 name: messaging-service
-          image: wfswarm-messaging-shared-work-queue-frontend:latest
+          image: wfswarm-messaging-work-queue-frontend:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -132,7 +132,7 @@ objects:
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 180
-          name: wfswarm-messaging-shared-work-queue-frontend
+          name: wfswarm-messaging-work-queue-frontend
           ports:
           - containerPort: 8080
             name: http
@@ -156,32 +156,32 @@ objects:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - wfswarm-messaging-shared-work-queue-frontend
+        - wfswarm-messaging-work-queue-frontend
         from:
           kind: ImageStreamTag
-          name: wfswarm-messaging-shared-work-queue-frontend:latest
+          name: wfswarm-messaging-work-queue-frontend:latest
       type: ImageChange
 - apiVersion: v1
   kind: Service
   metadata:
     labels:
-      app: wfswarm-messaging-shared-work-queue-frontend
-    name: wfswarm-messaging-shared-work-queue-frontend
+      app: wfswarm-messaging-work-queue-frontend
+    name: wfswarm-messaging-work-queue-frontend
   spec:
     ports:
     - name: http
       port: 8080
     selector:
-      app: wfswarm-messaging-shared-work-queue-frontend
+      app: wfswarm-messaging-work-queue-frontend
 - apiVersion: v1
   kind: Route
   metadata:
     labels:
-      app: wfswarm-messaging-shared-work-queue-frontend
+      app: wfswarm-messaging-work-queue-frontend
     name: frontend
   spec:
     port:
       targetPort: 8080
     to:
       kind: Service
-      name: wfswarm-messaging-shared-work-queue-frontend
+      name: wfswarm-messaging-work-queue-frontend

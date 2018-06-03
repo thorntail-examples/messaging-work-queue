@@ -30,8 +30,8 @@ import org.jboss.logging.Logger;
 
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = "connectionFactory", propertyValue = "factory1"),
-        @ActivationConfigProperty(propertyName = "user", propertyValue = "shared-work-queue"),
-        @ActivationConfigProperty(propertyName = "password", propertyValue = "shared-work-queue"),
+        @ActivationConfigProperty(propertyName = "user", propertyValue = "work-queue"),
+        @ActivationConfigProperty(propertyName = "password", propertyValue = "work-queue"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue1"),
         @ActivationConfigProperty(propertyName = "jndiParameters", propertyValue = "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672};queue.queue1=responses"),
     })

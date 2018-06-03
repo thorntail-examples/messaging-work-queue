@@ -20,15 +20,15 @@
 
   <parent>
     <groupId>io.openshift.booster</groupId>
-    <artifactId>wfswarm-messaging-shared-work-queue-parent</artifactId>
+    <artifactId>wfswarm-messaging-work-queue-parent</artifactId>
     <version>1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>wfswarm-messaging-shared-work-queue-worker</artifactId>
+  <artifactId>wfswarm-messaging-work-queue-worker</artifactId>
   <version>1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>WildFly Swarm - Messaging - Shared Work Queue Booster - Worker</name>
+  <name>WildFly Swarm - Messaging - Work Queue Booster - Worker</name>
 
   <dependencies>
     <dependency>
@@ -54,7 +54,7 @@
     </dependency>
     <dependency>
       <groupId>io.openshift.booster</groupId>
-      <artifactId>wfswarm-messaging-shared-work-queue-resource-adapter</artifactId>
+      <artifactId>wfswarm-messaging-work-queue-resource-adapter</artifactId>
       <version>1-SNAPSHOT</version>
       <type>rar</type>
     </dependency>
