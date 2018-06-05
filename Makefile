@@ -1,3 +1,9 @@
+.PHONY: help
+help:
+	@echo "build           Build the code"
+	@echo "run             Run all the components using a test broker"
+	@echo "clean           Removes build and test artifacts"
+
 .PHONY: build
 build:
 	mvn package
@@ -10,6 +16,10 @@ clean:
 .PHONY: test
 test:
 	mvn install -Popenshift-it
+
+.PHONY: run
+run:
+	scripts/run-all
 
 .PHONY: run-frontend
 run-frontend:

@@ -24,8 +24,8 @@ oc new-app --template=amq63-basic \
   -p APPLICATION_NAME=work-queue-broker \
   -p IMAGE_STREAM_NAMESPACE=$(oc project -q) \
   -p MQ_PROTOCOL=amqp \
-  -p MQ_QUEUES=requests,responses \
-  -p MQ_TOPICS=worker-status \
+  -p MQ_QUEUES=work-queue/requests,work-queue/responses \
+  -p MQ_TOPICS=work-queue/worker-updates \
   -p MQ_USERNAME=work-queue \
   -p MQ_PASSWORD=work-queue
 
@@ -37,8 +37,8 @@ oc new-app --template=wfswarm-messaging-work-queue-worker
 <!--   -p APPLICATION_NAME=work-queue-broker \ -->
 <!--   -p IMAGE_STREAM_NAMESPACE=$(oc project -q) \ -->
 <!--   -p AMQ_PROTOCOL=amqp \ -->
-<!--   -p AMQ_QUEUES=requests,responses \ -->
-<!--   -p AMQ_ADDRESSES=worker-status \ -->
+<!--   -p AMQ_QUEUES=work-queue/requests,work-queue/responses \ -->
+<!--   -p AMQ_ADDRESSES=work-queue/worker-updates \ -->
 <!--   -p AMQ_USER=work-queue \ -->
 <!--   -p AMQ_PASSWORD=work-queue -->
 
