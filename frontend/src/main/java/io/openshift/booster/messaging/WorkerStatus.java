@@ -17,18 +17,18 @@
 package io.openshift.booster.messaging;
 
 public class WorkerStatus {
-    private final String id;
+    private final String workerId;
     private final long timestamp;
     private final long requestsProcessed;
 
-    public WorkerStatus(String id, long timestamp, long requestsProcessed) {
-        this.id = id;
+    public WorkerStatus(String workerId, long timestamp, long requestsProcessed) {
+        this.workerId = workerId;
         this.timestamp = timestamp;
         this.requestsProcessed = requestsProcessed;
     }
 
-    public String getId() {
-        return id;
+    public String getWorkerId() {
+        return workerId;
     }
 
     public long getTimestamp() {
@@ -41,7 +41,7 @@ public class WorkerStatus {
 
     @Override
     public String toString() {
-        return String.format("WorkerStatus{id=%s, timestamp=%s, requestsProcessed=%s}",
-                             id, timestamp, requestsProcessed);
+        return String.format("WorkerStatus{workerId=%s, timestamp=%s, requestsProcessed=%s}",
+                             workerId, timestamp, requestsProcessed);
     }
 }

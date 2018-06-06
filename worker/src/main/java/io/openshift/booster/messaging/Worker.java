@@ -48,7 +48,7 @@ public class Worker {
     public void sendStatusUpdate() {
         log.infof("Sending status update");
 
-        Topic workerStatus = jmsContext.createTopic("worker-status");
+        Topic workerStatus = jmsContext.createTopic("work-queue/worker-updates");
         JMSProducer producer = jmsContext.createProducer();
         Message message = jmsContext.createMessage();
 

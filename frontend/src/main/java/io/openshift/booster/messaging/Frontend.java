@@ -65,8 +65,8 @@ public class Frontend extends Application {
     public void sendRequest(Request request) {
         log.infof("Sending %s", request);
 
-        Queue requests = jmsContext.createQueue("requests");
-        Queue responses = jmsContext.createQueue("responses");
+        Queue requests = jmsContext.createQueue("work-queue/requests");
+        Queue responses = jmsContext.createQueue("work-queue/responses");
         JMSProducer producer = jmsContext.createProducer();
         TextMessage message = jmsContext.createTextMessage();
 

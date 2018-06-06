@@ -33,7 +33,7 @@ import org.jboss.logging.Logger;
         @ActivationConfigProperty(propertyName = "user", propertyValue = "work-queue"),
         @ActivationConfigProperty(propertyName = "password", propertyValue = "work-queue"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "topic1"),
-        @ActivationConfigProperty(propertyName = "jndiParameters", propertyValue = "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672};topic.topic1=worker-status"),
+        @ActivationConfigProperty(propertyName = "jndiParameters", propertyValue = "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672};topic.topic1=work-queue/worker-updates"),
     })
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class WorkerStatusListener implements MessageListener {
@@ -47,16 +47,16 @@ public class WorkerStatusListener implements MessageListener {
         WorkerStatus status;
 
         try {
-            String id = message.getStringProperty("workerId");
+            String workerId = message.getStringProperty("workerId");
             long timestamp = message.getLongProperty("timestamp");
             long requestsProcessed = message.getLongProperty("requestsProcessed");
 
-            status = new WorkerStatus(id, timestamp, requestsProcessed);
+            status = new WorkerStatus(workerId, timestamp, requestsProcessed);
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }
 
-        frontend.getData().getWorkers().put(status.getId(), status);
+        frontend.getData().getWorkers().put(status.getWorkerId(), status);
 
         log.infof("Received %s", status);
     }

@@ -16,8 +16,6 @@
 
 package io.openshift.booster.messaging;
 
-import java.util.Objects;
-
 public class Request {
     private String text;
 
