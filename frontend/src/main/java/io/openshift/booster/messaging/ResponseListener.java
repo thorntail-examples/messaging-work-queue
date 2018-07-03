@@ -59,6 +59,6 @@ public class ResponseListener implements MessageListener {
 
         frontend.getData().getResponses().put(response.getRequestId(), response);
 
-        log.infof("Received %s", response);
+        log.infof("%s: Received %s", frontend.id, response);
     }
 }

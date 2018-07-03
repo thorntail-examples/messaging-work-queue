@@ -59,6 +59,6 @@ public class WorkerUpdateListener implements MessageListener {
 
         frontend.getData().getWorkers().put(update.getWorkerId(), update);
 
-        log.infof("Received %s", update);
+        log.debugf("%s: Received %s", frontend.id, update);
     }
 }

@@ -46,7 +46,7 @@ import org.jboss.logging.Logger;
 @Path("/")
 public class Frontend extends Application {
     private static final Logger log = Logger.getLogger(Frontend.class);
-    private static final String id = "frontend-wfswarm-" + UUID.randomUUID()
+    static final String id = "frontend-wfswarm-" + UUID.randomUUID()
         .toString().substring(0, 4);
     private final Data data;
 
@@ -63,7 +63,7 @@ public class Frontend extends Application {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String sendRequest(Request request) {
-        log.infof("Sending %s", request);
+        log.infof("%s: Sending %s", id, request);
 
         Queue requests = jmsContext.createQueue("work-queue/requests");
         Queue responses = jmsContext.createQueue("work-queue/responses");
@@ -112,7 +112,7 @@ public class Frontend extends Application {
 
     @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
     public void pruneStaleWorkers() {
-        log.debugf("Pruning stale workers");
+        log.debugf("%s: Pruning stale workers", id);
 
         Map<String, WorkerUpdate> workers = getData().getWorkers();
         long now = System.currentTimeMillis();
@@ -123,7 +123,7 @@ public class Frontend extends Application {
 
             if (now - update.getTimestamp() > 10 * 1000) {
                 workers.remove(workerId);
-                log.infof("Pruned %s", workerId);
+                log.infof("%s: Pruned %s", id, workerId);
             }
         }
     }

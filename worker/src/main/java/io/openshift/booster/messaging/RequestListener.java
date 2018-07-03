@@ -57,7 +57,7 @@ public class RequestListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        log.infof("Receiving request %s", message);
+        log.infof("%s: Processing request %s", worker.id, message);
 
         TextMessage request = (TextMessage) message;
         String responseText;
@@ -65,7 +65,7 @@ public class RequestListener implements MessageListener {
         try {
             responseText = processRequest(request);
         } catch (Exception e) {
-            log.errorf("Failed processing message: " + e);
+            log.errorf("%s: Failed processing: %s", worker.id, e.getMessage());
             return;
         }
 
@@ -88,7 +88,7 @@ public class RequestListener implements MessageListener {
 
         worker.requestsProcessed.incrementAndGet();
 
-        log.infof("Sent %s", response);
+        log.infof("%s: Sent %s", worker.id, response);
     }
 
     private String processRequest(TextMessage request) throws Exception {

@@ -38,9 +38,9 @@ import org.jboss.logging.Logger;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class Worker {
     private static final Logger log = Logger.getLogger(Worker.class);
-
     static final String id = "worker-wfswarm-" + UUID.randomUUID()
         .toString().substring(0, 4);
+
     static AtomicInteger requestsProcessed = new AtomicInteger(0);
     static AtomicInteger processingErrors = new AtomicInteger(0);
 
@@ -50,7 +50,7 @@ public class Worker {
 
     @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
     public void sendUpdate() {
-        log.debugf("Sending status update");
+        log.debugf("%s: Sending status update", id);
 
         Topic workerStatus = jmsContext.createTopic("work-queue/worker-updates");
         JMSProducer producer = jmsContext.createProducer();
