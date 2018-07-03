@@ -18,6 +18,7 @@
 package io.openshift.booster.messaging;
 
 import java.util.Map;
+import java.util.UUID;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
@@ -28,11 +29,14 @@ import javax.jms.JMSProducer;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import org.jboss.logging.Logger;
@@ -42,6 +46,8 @@ import org.jboss.logging.Logger;
 @Path("/")
 public class Frontend extends Application {
     private static final Logger log = Logger.getLogger(Frontend.class);
+    private static final String id = "frontend-wfswarm-" + UUID.randomUUID()
+        .toString().substring(0, 4);
     private final Data data;
 
     @Inject
@@ -52,17 +58,11 @@ public class Frontend extends Application {
         this.data = new Data();
     }
 
-    @GET
-    @Path("data")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Data getData() {
-        return data;
-    }
-
     @POST
     @Path("send-request")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void sendRequest(Request request) {
+    @Produces(MediaType.TEXT_PLAIN)
+    public String sendRequest(Request request) {
         log.infof("Sending %s", request);
 
         Queue requests = jmsContext.createQueue("work-queue/requests");
@@ -71,29 +71,59 @@ public class Frontend extends Application {
         TextMessage message = jmsContext.createTextMessage();
 
         try {
-            message.setText(request.getText());
             message.setJMSReplyTo(responses);
+            message.setBooleanProperty("uppercase", request.isUppercase());
+            message.setBooleanProperty("reverse", request.isReverse());
+            message.setText(request.getText());
+
+            producer.send(requests, message);
+
+            getData().getRequestIds().add(message.getJMSMessageID());
+
+            return message.getJMSMessageID();
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        producer.send(requests, message);
+    @GET
+    @Path("receive-response")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response receiveResponse(@QueryParam("request") String requestId) {
+        if (requestId == null) {
+            throw new BadRequestException("A 'request' parameter is required");
+        }
+        
+        Response response = getData().getResponses().get(requestId);
+
+        if (response == null) {
+            throw new NotFoundException();
+        }
+
+        return response;
+    }
+
+    @GET
+    @Path("data")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Data getData() {
+        return data;
     }
 
     @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
     public void pruneStaleWorkers() {
-        log.infof("Pruning stale workers");
+        log.debugf("Pruning stale workers");
 
-        Map<String, WorkerStatus> workers = getData().getWorkers();
+        Map<String, WorkerUpdate> workers = getData().getWorkers();
         long now = System.currentTimeMillis();
 
-        for (Map.Entry<String, WorkerStatus> entry : workers.entrySet()) {
+        for (Map.Entry<String, WorkerUpdate> entry : workers.entrySet()) {
             String workerId = entry.getKey();
-            WorkerStatus status = entry.getValue();
+            WorkerUpdate update = entry.getValue();
 
-            if (now - status.getTimestamp() > 10 * 1000) {
+            if (now - update.getTimestamp() > 10 * 1000) {
                 workers.remove(workerId);
-                log.infof("Pruned %s", status);
+                log.infof("Pruned %s", workerId);
             }
         }
     }

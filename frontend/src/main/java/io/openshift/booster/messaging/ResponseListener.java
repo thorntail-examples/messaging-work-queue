@@ -48,15 +48,16 @@ public class ResponseListener implements MessageListener {
         Response response;
 
         try {
+            String requestId = textMessage.getJMSCorrelationID();
             String workerId = textMessage.getStringProperty("workerId");
             String text = textMessage.getText();
 
-            response = new Response(workerId, text);
+            response = new Response(requestId, workerId, text);
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }
 
-        frontend.getData().getResponses().add(response);
+        frontend.getData().getResponses().put(response.getRequestId(), response);
 
         log.infof("Received %s", response);
     }

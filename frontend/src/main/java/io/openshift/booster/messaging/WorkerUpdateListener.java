@@ -36,28 +36,29 @@ import org.jboss.logging.Logger;
         @ActivationConfigProperty(propertyName = "jndiParameters", propertyValue = "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672};topic.topic1=work-queue/worker-updates"),
     })
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class WorkerStatusListener implements MessageListener {
-    private static final Logger log = Logger.getLogger(WorkerStatusListener.class);
+public class WorkerUpdateListener implements MessageListener {
+    private static final Logger log = Logger.getLogger(WorkerUpdateListener.class);
 
     @Inject
     private Frontend frontend;
 
     @Override
     public void onMessage(Message message) {
-        WorkerStatus status;
+        WorkerUpdate update;
 
         try {
             String workerId = message.getStringProperty("workerId");
             long timestamp = message.getLongProperty("timestamp");
             long requestsProcessed = message.getLongProperty("requestsProcessed");
+            long processingErrors = message.getLongProperty("processingErrors");
 
-            status = new WorkerStatus(workerId, timestamp, requestsProcessed);
+            update = new WorkerUpdate(workerId, timestamp, requestsProcessed, processingErrors);
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }
 
-        frontend.getData().getWorkers().put(status.getWorkerId(), status);
+        frontend.getData().getWorkers().put(update.getWorkerId(), update);
 
-        log.infof("Received %s", status);
+        log.infof("Received %s", update);
     }
 }

@@ -80,6 +80,7 @@ public class RequestListener implements MessageListener {
 
             responses = request.getJMSReplyTo();
         } catch (JMSException e) {
+            worker.processingErrors.incrementAndGet();
             throw new RuntimeException(e);
         }
 
@@ -91,6 +92,18 @@ public class RequestListener implements MessageListener {
     }
 
     private String processRequest(TextMessage request) throws Exception {
-        return request.getText().toUpperCase();
+        boolean uppercase = request.getBooleanProperty("uppercase");
+        boolean reverse = request.getBooleanProperty("reverse");
+        String text = request.getText();
+
+        if (uppercase) {
+            text = text.toUpperCase();
+        }
+
+        if (reverse) {
+            text = new StringBuilder(text).reverse().toString();
+        }
+
+        return text;
     }
 }

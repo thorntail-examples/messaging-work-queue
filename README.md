@@ -66,7 +66,7 @@ workers in the backend.
 * [frontend/src/main/java/io/openshift/booster/messaging/ResponseListener.java](frontend/src/main/java/io/openshift/booster/messaging/ResponseListener.java) -
   A message-driven bean for consuming the results of requests.
 
-* [frontend/src/main/java/io/openshift/booster/messaging/WorkerStatusListener.java](frontend/src/main/java/io/openshift/booster/messaging/WorkerStatusListener.java) -
+* [frontend/src/main/java/io/openshift/booster/messaging/WorkerUpdateListener.java](frontend/src/main/java/io/openshift/booster/messaging/WorkerUpdateListener.java) -
   A message-driven bean for handling worker status updates.
 
 * [frontend/src/main/resources/project-defaults.yml](frontend/src/main/resources/project-defaults.yml) -

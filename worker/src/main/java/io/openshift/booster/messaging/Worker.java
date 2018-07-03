@@ -18,6 +18,7 @@
 package io.openshift.booster.messaging;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
@@ -37,16 +38,19 @@ import org.jboss.logging.Logger;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class Worker {
     private static final Logger log = Logger.getLogger(Worker.class);
-    static String id = "swarm-" + (Math.round(Math.random() * (10000 - 1000)) + 1000);
+
+    static final String id = "worker-wfswarm-" + UUID.randomUUID()
+        .toString().substring(0, 4);
     static AtomicInteger requestsProcessed = new AtomicInteger(0);
+    static AtomicInteger processingErrors = new AtomicInteger(0);
 
     @Inject
     @JMSConnectionFactory("java:global/jms/default")
     private JMSContext jmsContext;
 
     @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
-    public void sendStatusUpdate() {
-        log.infof("Sending status update");
+    public void sendUpdate() {
+        log.debugf("Sending status update");
 
         Topic workerStatus = jmsContext.createTopic("work-queue/worker-updates");
         JMSProducer producer = jmsContext.createProducer();
@@ -56,6 +60,7 @@ public class Worker {
             message.setStringProperty("workerId", id);
             message.setLongProperty("timestamp", System.currentTimeMillis());
             message.setLongProperty("requestsProcessed", requestsProcessed.get());
+            message.setLongProperty("processingErrors", processingErrors.get());
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }

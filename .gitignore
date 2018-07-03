@@ -1,3 +1,3 @@
 target/
-/audit.log
+audit.log
 /README.html

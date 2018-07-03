@@ -104,6 +104,8 @@ objects:
   spec:
     replicas: 1
     revisionHistoryLimit: 2
+    selector:
+      app: wfswarm-messaging-work-queue-frontend
     strategy:
       rollingParams:
         timeoutSeconds: 3600
