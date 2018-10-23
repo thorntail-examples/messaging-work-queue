@@ -53,9 +53,9 @@
       <artifactId>messaging</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.openshift.booster</groupId>
-      <artifactId>wfswarm-messaging-work-queue-resource-adapter</artifactId>
-      <version>1-SNAPSHOT</version>
+      <groupId>org.amqphub.jca</groupId>
+      <artifactId>resource-adapter</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
       <type>rar</type>
     </dependency>
   </dependencies>

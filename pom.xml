@@ -40,7 +40,6 @@
   </properties>
 
   <modules>
-    <module>resource-adapter</module>
     <module>frontend</module>
     <module>worker</module>
     <module>tests</module>

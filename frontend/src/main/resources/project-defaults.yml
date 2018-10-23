@@ -1,10 +1,10 @@
 swarm:
   deployment:
-    io.openshift.booster:wfswarm-messaging-work-queue-resource-adapter.rar:
+    org.amqphub.jca:resource-adapter.rar:
   resource-adapters:
     resource-adapters:
       default:
-        archive: wfswarm-messaging-work-queue-resource-adapter.rar
+        archive: resource-adapter.rar
         transaction-support: NoTransaction
         connection-definitions:
           default:
