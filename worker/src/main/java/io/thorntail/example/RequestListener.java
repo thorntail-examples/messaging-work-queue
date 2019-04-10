@@ -1,23 +1,24 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *  Copyright 2018-2019 Red Hat, Inc, and individual contributors.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
+package io.thorntail.example;
 
-package io.openshift.booster.messaging;
+import org.jboss.logging.Logger;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
@@ -27,15 +28,9 @@ import javax.jms.Destination;
 import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
-import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import org.jboss.logging.Logger;
 
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = "connectionFactory", propertyValue = "factory1"),
@@ -43,13 +38,13 @@ import org.jboss.logging.Logger;
         @ActivationConfigProperty(propertyName = "password", propertyValue = "work-queue"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue1"),
         @ActivationConfigProperty(propertyName = "jndiParameters", propertyValue = "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672};queue.queue1=work-queue/requests"),
-    })
+})
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class RequestListener implements MessageListener {
     private static final Logger log = Logger.getLogger(RequestListener.class);
 
     @Inject
-    private Worker worker;
+    private GlobalData globalData;
 
     @Inject
     @JMSConnectionFactory("java:global/jms/default")
@@ -57,44 +52,45 @@ public class RequestListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        log.infof("%s: Processing request %s", worker.id, message);
+        log.infof("%s: Processing request", globalData.id);
 
         TextMessage request = (TextMessage) message;
-        String responseText;
 
+        String responseText;
         try {
             responseText = processRequest(request);
         } catch (Exception e) {
-            log.errorf("%s: Failed processing: %s", worker.id, e.getMessage());
+            log.errorf("%s: Failed processing request: %s", globalData.id, e.getMessage());
+            globalData.processingErrors.incrementAndGet();
             return;
         }
 
-        JMSProducer producer = jmsContext.createProducer();
         TextMessage response = jmsContext.createTextMessage();
-        Destination responses;
+        Destination responseDestination;
 
         try {
             response.setJMSCorrelationID(request.getJMSMessageID());
-            response.setStringProperty("workerId", worker.id);
+            response.setStringProperty("workerId", globalData.id);
             response.setText(responseText);
 
-            responses = request.getJMSReplyTo();
+            responseDestination = request.getJMSReplyTo();
         } catch (JMSException e) {
-            worker.processingErrors.incrementAndGet();
-            throw new RuntimeException(e);
+            log.errorf("%s: Failed sending response: %s", globalData.id, e.getMessage());
+            globalData.processingErrors.incrementAndGet();
+            return;
         }
 
-        producer.send(responses, response);
+        jmsContext.createProducer().send(responseDestination, response);
 
-        worker.requestsProcessed.incrementAndGet();
+        globalData.requestsProcessed.incrementAndGet();
 
-        log.infof("%s: Sent %s", worker.id, response);
+        log.infof("%s: Sent response", globalData.id);
     }
 
     private String processRequest(TextMessage request) throws Exception {
+        String text = request.getText();
         boolean uppercase = request.getBooleanProperty("uppercase");
         boolean reverse = request.getBooleanProperty("reverse");
-        String text = request.getText();
 
         if (uppercase) {
             text = text.toUpperCase();

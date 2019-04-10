@@ -1,24 +1,20 @@
 /*
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Copyright 2018-2019 Red Hat, Inc, and individual contributors.
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  *
  */
-
 "use strict";
 
 const gesso = new Gesso();
@@ -50,8 +46,6 @@ class Application {
     }
 
     sendRequest(form) {
-        console.log("Sending request");
-
         let request = gesso.openRequest("POST", "/api/send-request", (event) => {
             if (event.target.status >= 200 && event.target.status < 300) {
                 this.fetchDataPeriodically();
@@ -77,8 +71,6 @@ class Application {
             return;
         }
 
-        console.log("Rendering responses");
-
         let div = gesso.createDiv(null, "#responses");
 
         for (let requestId of this.data.requestIds.reverse()) {
@@ -97,9 +89,9 @@ class Application {
     }
 
     renderWorkers() {
-        console.log("Rendering workers");
+        let workers = this.data.workers;
 
-        if (Object.keys(this.data.workers).length === 0) {
+        if (Object.keys(workers).length === 0) {
             let div = gesso.createDiv(null, "#workers");
             let span = gesso.createSpan(div, "placeholder", "None");
 
@@ -110,10 +102,9 @@ class Application {
 
         let headings = ["ID", "Updated", "Requests processed", "Processing errors"];
         let rows = [];
-        let now = new Date().getTime();
 
-        for (let workerId in this.data.workers) {
-            let update = this.data.workers[workerId];
+        for (let workerId in workers) {
+            let update = workers[workerId];
             let time = new Date(update.timestamp).toLocaleString();
             let requestsProcessed = update.requestsProcessed;
             let processingErrors = update.processingErrors;

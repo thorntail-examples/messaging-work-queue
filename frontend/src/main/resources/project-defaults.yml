@@ -1,4 +1,4 @@
-swarm:
+thorntail:
   deployment:
     org.amqphub.jca:resource-adapter.rar:
   resource-adapters:
