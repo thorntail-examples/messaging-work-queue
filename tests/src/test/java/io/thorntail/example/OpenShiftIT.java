@@ -58,7 +58,7 @@ public class OpenShiftIT {
                         .body().asString();
 
         // wait for the request to be handled
-        await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
+        await().atMost(60, TimeUnit.SECONDS).untilAsserted(() -> {
             given()
                     .baseUri(url)
             .when()
@@ -84,7 +84,7 @@ public class OpenShiftIT {
         String text = responseJson.getString("text");
 
         // verify data
-        await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
+        await().atMost(60, TimeUnit.SECONDS).untilAsserted(() -> {
             given()
                     .baseUri(url)
             .when()
