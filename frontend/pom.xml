@@ -37,7 +37,7 @@
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>ejb</artifactId>
+      <artifactId>ejb-mdb</artifactId>
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
@@ -56,12 +56,6 @@
       <artifactId>resource-adapter</artifactId>
       <version>${version.amqphub-jca}</version>
       <type>rar</type>
-    </dependency>
-
-    <!-- I don't think I should need this, but I do -->
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>messaging</artifactId>
     </dependency>
   </dependencies>
 
