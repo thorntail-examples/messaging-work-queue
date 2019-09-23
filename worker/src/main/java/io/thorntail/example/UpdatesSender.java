@@ -24,7 +24,6 @@ import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -39,7 +38,6 @@ public class UpdatesSender {
     private GlobalData globalData;
 
     @Inject
-    @JMSConnectionFactory("java:global/jms/default")
     private JMSContext jmsContext;
 
     @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)

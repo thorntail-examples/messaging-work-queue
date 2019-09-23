@@ -3,7 +3,6 @@ package io.thorntail.example;
 import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
-import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -26,7 +25,6 @@ public class FrontendResource {
     private GlobalData globalData;
 
     @Inject
-    @JMSConnectionFactory("java:global/jms/default")
     private JMSContext jmsContext;
 
     @POST
