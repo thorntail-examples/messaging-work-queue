@@ -7,8 +7,8 @@ It uses the AMQP 1.0 message protocol to send and receive messages.
 
 ## Prerequisites
 
-* The user has access to an OpenShift instance and is logged in.
-* The user has selected a project in which the frontend and backend processes will be deployed.
+* Log into an OpenShift cluster of your choice: `oc login ...`.
+* Select a project in which the services will be deployed: `oc project ...`.
 
 ## Modules
 
@@ -32,16 +32,19 @@ oc apply -f ./worker/.openshiftio/application.yaml
 oc new-app --template=thorntail-messaging-work-queue-worker
 ```
 
-### Deployment with the Fabric8 Maven Plugin
+### Deployment with the JKube Maven Plugin
 
 ```bash
 oc apply -f ./frontend/.openshiftio/service.amq.yaml
 
-cd frontend
-mvn clean fabric8:deploy -Popenshift
-cd ..
+mvn clean oc:deploy -Popenshift
+```
 
-cd worker
-mvn clean fabric8:deploy -Popenshift
-cd ..
+## Test everything
+
+This is completely self-contained and doesn't require the application to be deployed in advance.
+Note that this may delete anything and everything in the OpenShift project.
+
+```bash
+mvn clean verify -Popenshift,openshift-it
 ```
